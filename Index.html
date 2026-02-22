@@ -1,0 +1,1854 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Flying Yastrub Studio | Документація: System IAP + Essential Kit</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #FF0000;
+      --black: #000000;
+      --white: #FFFFFF;
+      --dark-bg: #121212;
+      --dark-card: #1E1E1E;
+      --dark-text: #E0E0E0;
+      --dark-border: #333333;
+      --muted: #A9A9A9;
+      --ok: #2ecc71;
+      --warn: #f1c40f;
+      --bad: #e74c3c;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      color: var(--dark-text);
+      background-color: var(--dark-bg);
+      line-height: 1.65;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      color: var(--white);
+    }
+
+    a { text-decoration: none; color: var(--primary); transition: 0.2s; }
+    a:hover { color: var(--white); }
+
+    code, pre {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    header {
+      background-color: var(--dark-card);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+      position: fixed;
+      width: 100%;
+      z-index: 100;
+      border-bottom: 1px solid var(--dark-border);
+    }
+
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 0;
+      gap: 16px;
+    }
+
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo img { height: 38px; }
+    .logo-text {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: var(--primary);
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+
+    nav ul { display: flex; list-style: none; flex-wrap: wrap; }
+    nav ul li { margin-left: 20px; }
+    nav ul li a {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 600;
+      color: var(--white);
+      position: relative;
+      font-size: 0.95rem;
+    }
+    nav ul li a:after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      background: var(--primary);
+      bottom: -6px;
+      left: 0;
+      transition: width 0.25s;
+    }
+    nav ul li a:hover:after { width: 100%; }
+
+    .mobile-menu {
+      display: none;
+      font-size: 1.6rem;
+      cursor: pointer;
+      color: var(--white);
+      user-select: none;
+    }
+
+    main { padding-top: 90px; }
+
+    .hero { padding: 28px 0 18px; }
+
+    .hero-card {
+      background: linear-gradient(180deg, rgba(255,0,0,0.09), rgba(0,0,0,0));
+      border: 1px solid rgba(255,0,0,0.22);
+      border-radius: 16px;
+      padding: 22px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+    }
+
+    .hero h1 { font-size: 2.2rem; margin-bottom: 8px; }
+    .hero p { color: var(--muted); max-width: 920px; }
+
+    .chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+    .chip {
+      border: 1px solid var(--dark-border);
+      background: rgba(0,0,0,0.22);
+      color: var(--white);
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 0.92rem;
+    }
+    .chip b { color: var(--primary); }
+
+    .toolbar {
+      margin-top: 16px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .search {
+      flex: 1;
+      min-width: 220px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .search input {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--dark-border);
+      background: rgba(0,0,0,0.25);
+      color: var(--white);
+      outline: none;
+    }
+    .search input::placeholder { color: rgba(255,255,255,0.45); }
+
+    .btn {
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--dark-border);
+      background: rgba(0,0,0,0.22);
+      color: var(--white);
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s;
+      user-select: none;
+      white-space: nowrap;
+    }
+    .btn:hover { border-color: rgba(255,0,0,0.55); color: var(--primary); }
+    .btn.primary { border-color: rgba(255,0,0,0.45); background: rgba(255,0,0,0.10); }
+
+    .meta {
+      color: var(--muted);
+      font-size: 0.92rem;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: flex-end;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--dark-border);
+      background: rgba(0,0,0,0.25);
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    .pill.ok { border-color: rgba(46,204,113,0.35); color: var(--ok); }
+    .pill.warn { border-color: rgba(241,196,15,0.35); color: var(--warn); }
+    .pill.bad { border-color: rgba(231,76,60,0.35); color: var(--bad); }
+
+    .section { padding: 34px 0 60px; }
+    .section.bg {
+      background-color: var(--dark-card);
+      border-top: 1px solid var(--dark-border);
+      border-bottom: 1px solid var(--dark-border);
+    }
+
+    .section-title {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .section-title h2 { font-size: 1.75rem; }
+    .section-title .hint { color: var(--muted); font-size: 0.95rem; }
+
+    /* ===== Accordion ===== */
+    .accordion {
+      display: grid;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    details.acc {
+      border: 1px solid var(--dark-border);
+      border-radius: 14px;
+      background: rgba(0,0,0,0.18);
+      overflow: hidden;
+    }
+
+    summary.acc-head {
+      list-style: none;
+      cursor: pointer;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      user-select: none;
+    }
+    summary.acc-head::-webkit-details-marker { display: none; }
+
+    .acc-left {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    .acc-title {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      color: var(--white);
+      font-size: 1.02rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .acc-sub {
+      color: var(--muted);
+      font-size: 0.92rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .acc-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .chev {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      border: 1px solid var(--dark-border);
+      background: rgba(0,0,0,0.22);
+      display: grid;
+      place-items: center;
+      transition: 0.2s;
+    }
+    details[open] .chev { transform: rotate(180deg); border-color: rgba(255,0,0,0.45); }
+
+    .acc-body {
+      padding: 16px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    .card {
+      background: rgba(0,0,0,0.22);
+      border: 1px solid var(--dark-border);
+      border-radius: 14px;
+      padding: 16px;
+    }
+
+    .card h3 { font-size: 1.06rem; color: var(--primary); margin-bottom: 10px; }
+
+    .list { padding-left: 18px; }
+    .list li { margin-bottom: 10px; }
+    .list li span { color: var(--muted); }
+
+    pre {
+      background: rgba(0,0,0,0.35);
+      border: 1px solid var(--dark-border);
+      border-radius: 12px;
+      padding: 14px;
+      overflow: auto;
+      font-size: 0.95rem;
+      margin-top: 10px;
+      white-space: pre;
+    }
+
+    .callout {
+      border-left: 4px solid var(--primary);
+      background: rgba(255,0,0,0.07);
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,0,0,0.18);
+      margin-top: 12px;
+    }
+    .callout b { color: var(--white); }
+
+    .screens {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-top: 14px;
+    }
+
+    .screen {
+      border: 1px dashed rgba(255,0,0,0.45);
+      border-radius: 14px;
+      overflow: hidden;
+      background: rgba(0,0,0,0.18);
+    }
+    .screen .top {
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(255,0,0,0.25);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+    .screen .top .name {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      color: var(--white);
+      font-size: 0.98rem;
+    }
+    .screen .top .tag {
+      font-size: 0.82rem;
+      color: var(--primary);
+      border: 1px solid rgba(255,0,0,0.35);
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(255,0,0,0.08);
+      white-space: nowrap;
+    }
+    .screen .img {
+      aspect-ratio: 16 / 9;
+      display: grid;
+      place-items: center;
+      color: rgba(255,255,255,0.78);
+      padding: 14px;
+      text-align: center;
+    }
+    .screen .img img { width: 100%; height: auto; object-fit: cover; display: block; }    .screen .caption {
+      padding: 10px 12px 12px;
+      color: var(--muted);
+      font-size: 0.92rem;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      overflow: hidden;
+      border-radius: 12px;
+      border: 1px solid var(--dark-border);
+    }
+    .table th, .table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      vertical-align: top;
+    }
+    .table th {
+      text-align: left;
+      font-family: 'Montserrat', sans-serif;
+      color: var(--white);
+      background: rgba(0,0,0,0.25);
+      font-size: 0.92rem;
+    }
+    .table td { color: var(--dark-text); }
+
+    .kbd {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(0,0,0,0.28);
+      padding: 3px 8px;
+      border-radius: 10px;
+      color: var(--white);
+      font-size: 0.88rem;
+    }
+
+    footer {
+      background-color: var(--black);
+      border-top: 1px solid var(--dark-border);
+      padding: 36px 0 18px;
+      margin-top: 10px;
+    }
+    .copyright {
+      text-align: center;
+      padding-top: 14px;
+      border-top: 1px solid var(--dark-border);
+      color: #666;
+    }
+
+    .hidden { display: none !important; }
+
+    @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+
+    @media (max-width: 768px) {
+      .header-container { padding: 14px; }
+      nav {
+        position: fixed;
+        top: 74px;
+        left: -100%;
+        width: 100%;
+        height: calc(100vh - 74px);
+        background-color: var(--dark-card);
+        transition: 0.25s;
+        z-index: 99;
+        overflow: auto;
+        padding-bottom: 30px;
+        border-top: 1px solid var(--dark-border);
+      }
+      nav.active { left: 0; }
+      nav ul { flex-direction: column; padding: 20px; }
+      nav ul li { margin: 14px 0; }
+      .mobile-menu { display: block; }
+      .hero h1 { font-size: 1.85rem; }
+    }
+
+    /* ===== FIX: tables overflow ===== */
+.table-wrap{
+  width:100%;
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  border:1px solid var(--dark-border);
+  border-radius:12px;
+  background: rgba(0,0,0,0.22);
+  margin-top: 10px;
+}
+
+/* table inside wrapper */
+.table{
+  margin-top: 0;            /* чтобы не было двойного отступа */
+  min-width: 720px;         /* можно 640px если хотите уже */
+  table-layout: fixed;      /* ключ: фиксируем ширины колонок */
+}
+
+/* make long content wrap */
+.table th, .table td{
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* code inside cells should wrap too */
+.table code{
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* optional: smaller min-width on phones */
+@media (max-width: 768px){
+  .table{ min-width: 640px; }
+}
+  </style>
+</head>
+
+<body>
+<header>
+  <div class="container header-container">
+    <div class="logo">
+      <img src="Logo/Logo.png" alt="Flying Yastrub Studio Logo">
+      <span class="logo-text">FLYING YASTRUB STUDIO</span>
+    </div>
+    <nav id="nav">
+      
+    <div class="mobile-menu" id="mobileMenu">☰</div>
+  </div>
+</header>
+
+<main id="doc">
+  <section class="hero">
+  <div class="container">
+    <div class="hero-card">
+      <h1>Документація: Essential Kit + System IAP (DataManager)</h1>
+
+      <p>
+        Повна інструкція з налаштування <b>Essential Kit</b>, підключення 
+        <b>Billing</b>, <b>Cloud Services</b>, <b>Game Services</b> 
+        та інтеграції з внутрішньою системою DataManager.
+      </p>
+
+      <div class="chips">
+        <span class="chip"><b>Остання редакція:</b> 22.02.2026</span>
+        <span class="chip"><b>Unity (написано на):</b> 6000.3.5f1</span>
+        <span class="chip"><b>Рекомендовані версії:</b> 6000.0.63f1 • 6000.0.68f1 • 6000.3.9f1</span>
+      </div>
+
+      <div class="callout" style="margin-top:16px;">
+        <b>Важливо:</b> документація перевірена на зазначених версіях Unity.
+        Використання інших версій може потребувати додаткової адаптації налаштувань.
+      </div>
+
+    </div>
+  </div>
+</section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-title">
+        <h2>Розділи документації (випадаючі)</h2>
+      </div>
+
+      <div class="accordion" id="accordion">
+
+        <!-- ===== 1) OVERVIEW ===== -->
+        <details class="acc" data-keys="overview загальне architecture схема жизненный цикл lifecycle">
+          <summary class="acc-head">
+            <div class="acc-left">
+              <div class="acc-title">1) Загальне: архітектура та потік роботи</div>
+              <div class="acc-sub">Що за модулі, хто за що відповідає, і як виглядає lifecycle IAP/Cloud</div>
+            </div>
+            <div class="acc-right">
+              <span class="pill ok">Core</span>
+              <div class="chev">˅</div>
+            </div>
+          </summary>
+
+          <div class="acc-body">
+            <div class="grid">
+              <div class="card">
+                <h3>Компоненти системи</h3>
+                <ul class="list">
+                  <li><b>DataManager</b> — центральна система, що керує всіма даними (coins/gems/vip).</li>
+                  <li><b>Cloud Save</b> (Essential Kit) — збереження данних ігрока за допомогою <code>cloudKey</code>.</li>
+                  <li><b>Billing</b> (Essential Kit) — магазин (ціни, покупка, restore).</li>
+                  <li><b>IapBuyButtonView</b> — Скрипт для UI, який під'єднується до DataManager, та виконує покупку.</li>
+                  <li><b>CurrencyTextView</b> — Скрипт який виводить всі значення із DataManager в UI (в TextMeshProUGUI).</li>
+                </ul>
+
+                
+              </div>
+
+              <div class="card">
+                <h3>Lifecycle</h3>
+                <pre>
+1) Старт гри
+   - DataManager ініціалізується
+   - запускає Cloud Sync
+   - запускає Billing Init (або STUB заглушка)
+
+2) CloudReady
+   - DataManager завантажує JSON
+   - виставляє CloudReady=true
+   - викликає OnCloudReady і OnStateChanged
+
+3) StoreReady
+   - Billing готовий: ціни доступні
+   - UI може показувати price/owned
+
+4) Покупка
+   - UI натискає Buy(productId)
+   - у разі успіху -> ApplyProduct -> змінюємо vars в DataManager</pre>
+
+                <div class="callout">
+                  <b>Типова причина “показує 0”:</b> UI читає до того, як <code>CloudReady</code> став <code>true</code>.
+                </div>
+              </div>
+            </div>
+
+            <div class="screens">
+              <div class="screen">
+                <div class="top">
+                  <div class="name">Скрін 1.1: Схема системи</div>
+                  <div class="tag">Diagram</div>
+                </div>
+                <div class="img">
+                   <img src="Image/Img1_1.png" alt="Architecture Diagram">
+                </div>
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <!-- ===== 2) INSTALL / SETUP ===== -->
+<details class="acc" data-keys="setup install essential kit billing cloud save configuration incomplete public key play services firebase">
+  <summary class="acc-head">
+    <div class="acc-left">
+      <div class="acc-title">2) Інсталяція та налаштування Essential Kit</div>
+      <div class="acc-sub">Встановлення пакету, базові налаштування, Billing / Cloud / Game Services + як уникнути “Configuration Incomplete”</div>
+    </div>
+    <div class="acc-right">
+      <span class="pill warn">Setup</span>
+      <div class="chev">˅</div>
+    </div>
+  </summary>
+
+  <div class="acc-body">
+    <div class="grid">
+
+      <!-- STEP 1 -->
+      <div class="card">
+        <h3>Крок 1 — Встановлення Essential Kit</h3>
+        <ul class="list">
+          <li>Спочатку потрібно <b>завантажити Essential Kit</b> та <b>імпортувати package</b> у проєкт.</li>
+        </ul>
+
+        <div class="screens">
+          <div class="screen">
+            <div class="top">
+              <div class="name">Скрін 2.1: Завантаження та імпорт пакету</div>
+              <div class="tag">Package</div>
+            </div>
+            <div class="img">
+              <img src="Image/Img2_1.png" alt="Import Essential Kit">
+            </div>
+            <div class="caption">Після імпорту переконайтеся, що Essential Kit зʼявився в Project Settings.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2 NEW -->
+      <div class="card">
+        <h3>Крок 2 — Помилка Newtonsoft (CS0246)</h3>
+
+        <div class="callout">
+          Після імпорту пакету може зʼявитися помилка:
+        </div>
+
+<pre>
+Assets\Plugins\VoxelBusters\CoreLibrary\Editor\CoreLibrary\Utilities\AssemblyDefinitionData.cs(1,7):
+error CS0246: The type or namespace name 'Newtonsoft' could not be found
+(are you missing a using directive or an assembly reference?)
+</pre>
+
+        <ul class="list">
+          <li>Це означає, що у проєкті відсутній пакет <b>Newtonsoft Json</b>.</li>
+          <li>Щоб вирішити проблему, відкрийте:</li>
+        </ul>
+
+        <div class="callout">
+          <b>Window → Package Management → Package Manager</b>
+        </div>
+
+        <ul class="list">
+          <li>У вікні Package Manager натисніть кнопку <b>“+”</b> у верхньому лівому куті.</li>
+          <li>Оберіть <b>Install package by name...</b></li>
+          <li>У полі введіть:</li>
+        </ul>
+
+<pre>
+com.unity.nuget.newtonsoft-json
+</pre>
+
+        <ul class="list">
+          <li>Натисніть <b>Install</b>.</li>
+        </ul>
+
+        <div class="screens">
+          <div class="screen">
+            <div class="top">
+              <div class="name">Скрін 2.2: Кнопка "+" у Package Manager</div>
+              <div class="tag">Unity</div>
+            </div>
+            <div class="img">
+              <img src="Image/Img2_2.png" alt="Import Essential Kit">
+              <div><b>Встав зображення:</b><br>кнопка "+" у Package Manager</div>
+            </div>
+          </div>
+
+          <div class="screen">
+            <div class="top">
+              <div class="name">Скрін 2.3: Install package by name</div>
+              <div class="tag">Unity</div>
+            </div>
+            <div class="img">
+              <img src="Image/Img2_3.png" alt="Install package by name">
+            </div>
+          </div>
+        </div>
+
+        <div class="callout">
+          Після встановлення пакету, якщо все зроблено правильно — помилки зникнуть автоматично.
+        </div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="card">
+        <h3>Крок 3 — Відкрити налаштування</h3>
+        <ul class="list">
+          <li>Перейдіть: <b>Edit → Project Settings → Essential Kit</b>.</li>
+          <li>У блоці <b>Store Identifiers</b> потрібно заповнити ідентифікатори застосунку — це необхідно для коректного підключення до <b>Google Play Console</b> та <b>App Store</b>.</li>
+          <li>У ці поля зазвичай вводиться <b>Package Name</b> (ідентифікатор застосунку).</li>
+        </ul>
+
+        <div class="callout">
+          <b>Де взяти Package Name:</b><br>
+          <code>Edit → Project Settings → Player → Other Settings → Package Name</code>
+        </div>
+
+        <div class="screens">
+          <div class="screen">
+            <div class="top">
+              <div class="name">Скрін 2.4: Store Identifiers (загальні налаштування)</div>
+              <div class="tag">Settings</div>
+            </div>
+            <div class="img">
+              <img src="Image/Img2_4.png" alt="Store Identifiers">
+            </div>
+            <div class="caption">Важливо: значення мають відповідати <b>вашому</b> застосунку в сторах.</div>
+          </div>
+
+          <div class="screen">
+            <div class="top">
+              <div class="name">Скрін 2.5: Package Name у Player Settings</div>
+              <div class="tag">Player</div>
+            </div>
+            <div class="img">
+              <img src="Image/Img2_5.png" alt="Package Name">
+            </div>
+            <div class="caption">Це значення часто копіюється в Store Identifiers.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 4 -->
+      <div class="card">
+        <h3>Крок 4 — Log Level (рекомендовано: Critical)</h3>
+        <ul class="list">
+          <li><b>Info</b> — показує інформацію, попередження та помилки як звичайні логи (для детальної діагностики).</li>
+          <li><b>Warning</b> — усе буде підсвічуватись як попередження (зручно, якщо не хочете “червоних” помилок у консолі).</li>
+          <li><b>Error</b> — повідомлення виводяться як помилки.</li>
+          <li><b>Critical</b> — показує тільки критичні проблеми, без яких Essential Kit не зможе працювати.</li>
+          <li><b>None</b> — повністю ігнорує логи (не рекомендовано, бо складно дебажити).</li>
+        </ul>
+
+        <div class="callout">
+          <b>Рекомендація:</b> встановіть <b>Critical</b>, щоб бачити тільки те, що реально блокує роботу.
+        </div>
+      </div>
+
+      <!-- STEP 5 -->
+      <div class="card">
+        <h3>Крок 5 — Вкладка Services (що треба увімкнути)</h3>
+        <ul class="list">
+          <li>Перейдіть у вкладку <b>Services</b> і увімкніть тільки те, що використовуєте.</li>
+          <li>У цьому проєкті зазвичай потрібні:</li>
+          <li><b>Billing</b> — для ініціалізації продуктів і покупок.</li>
+          <li><b>Cloud Services</b> — для збереження даних у хмару.</li>
+          <li><b>Game Services</b> — <b>обовʼязково</b> увімкніть разом із <b>Cloud Services</b>, тому що на Android Cloud інтеграція привʼязана до Google Play Games (без Game Services Cloud може видати “Required field missing / Configuration Incomplete”).</li>
+        </ul>
+
+        <div class="callout">
+          <b>Правило:</b> якщо фіча увімкнена — вона має бути налаштована. Інакше зʼявиться <b>Configuration Incomplete</b>.
+        </div>
+      </div>
+
+      <!-- STEP 6 -->
+      <div class="card">
+        <h3>Крок 6 — Billing (налаштування продуктів)</h3>
+        <ul class="list">
+          <li>Відкрийте налаштування Billing (іконка ⚙️ біля Billing).</li>
+          <li>У масиві <b>Products</b> додайте продукт і заповніть поля:</li>
+          <li><b>Id</b> — ID продукту. Він має <b>1:1 збігатися</b> з ID у Play Console / App Store.<br>
+            <span>Приклад: якщо в Play Console <code>gem_pack_1</code>, то в Unity має бути рівно <code>gem_pack_1</code> (регістр важливий).</span>
+          </li>
+          <li><b>Product Type</b> — тип продукту:
+            <ul class="list">
+              <li><b>Consumable</b> — витратний товар. Його можна купувати багато разів (наприклад: гем-паки, монети, бустери).</li>
+              <li><b>Non-Consumable</b> — разова покупка. Після покупки назавжди “належить” користувачу (наприклад: VIP доступ, вимкнення реклами, розблокування режиму).</li>
+              <li><b>Subscription</b> — підписка. Доступ діє, поки активна підписка (наприклад: Premium на місяць).</li>
+            </ul>
+          </li>
+          <li><b>Title</b> — назва продукту (для зручності у списку).</li>
+          <li><b>Description</b> — опис продукту.</li>
+          <li><b>IsInactive</b> — якщо <b>true</b>, продукт тимчасово недоступний у <b>вашому</b> білді (для тестів/вимкнення).</li>
+          <li><b>Payouts</b> — не змінюйте (у вашій системі “нагорода” задається через <code>VarChange[]</code> в UI).</li>
+          <li><b>Platform Id</b> та все, що з ним повʼязано — не змінюйте, якщо ви не налаштовуєте окремі ID під різні платформи вручну.</li>
+        </ul>
+      </div>
+
+      <!-- STEP 7 -->
+      <div class="card">
+        <h3>Крок 7 — Billing (важливі тумблери нижче)</h3>
+        <ul class="list">
+          <li><b>Auto Finish Transaction = true</b> — транзакція буде “закриватися” автоматично після успішної покупки. Це спрощує потік і зменшує ризик “завислих” транзакцій.</li>
+          <li><b>Auto Handle External Product Purchase Actions = true</b> — Essential Kit автоматично обробляє покупки, які були ініційовані “ззовні” (наприклад: відновлення покупок, повторна доставка, або завершення покупок після перезапуску гри). Це підвищує стабільність і допомагає не втратити результат покупки.</li>
+        </ul>
+      </div>
+
+      <!-- STEP 8 -->
+      <div class="card">
+        <h3>Крок 8 — Android Public Key (Google Play)</h3>
+        <ul class="list">
+          <li>У <b>Android Properties → Public Key</b> потрібно вставити ключ із Play Console.</li>
+          <li>Шлях у Play Console:</li>
+        </ul>
+
+        <pre>
+Play Console → (ваша гра) → Monetize with Play → Monetization setup →
+Base64-encoded RSA public key (Remove any spaces)
+        </pre>
+
+        <div class="screens">
+          <div class="screen">
+            <div class="top">
+              <div class="name">Скрін 2.6: Приклад Public Key у Play Console</div>
+              <div class="tag">Play Console</div>
+            </div>
+            <div class="img">
+              <img src="Image/Img2_6.png" alt="Public Key">
+            </div>
+            <div class="caption">Скопіюйте ключ без пробілів і вставте його в Android Properties → Public Key.</div>
+          </div>
+
+          <div class="screen">
+            <div class="top">
+              <div class="name">Скрін 2.7: Налаштований розділ Billing</div>
+              <div class="tag">Billing</div>
+            </div>
+            <div class="img">
+              <img src="Image/Img2_7.png" alt="Billing Settings">
+            </div>
+            <div class="caption">Перевірте: IDs збігаються, ключ вставлений, тумблери увімкнені.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 9 -->
+      <div class="card">
+        <h3>Крок 9 — Game Services (Play Services Application Id)</h3>
+        <ul class="list">
+          <li>Для роботи <b>Cloud Services</b> на Android потрібно також увімкнути <b>Game Services</b> і заповнити поле <b>Play Services Application Id</b>.</li>
+          <li>Цей ID генерується в <b>Google Play Console</b> через <b>Play Games Services</b>.</li>
+          <li><b>Де знайти/створити ID:</b></li>
+        </ul>
+
+        <pre>
+Play Console → (ваша гра) → Play Games Services →
+Setup and management → Configuration →
+Create new Play Games Services project → зареєструйте проєкт →
+після цього зʼявиться числовий ID (Play Services Application Id).
+        </pre>
+
+        <ul class="list">
+          <li><b>Куди вписати в Unity:</b> <b>Edit → Project Settings → Essential Kit → Services → Game Services</b> → поле <b>Play Services Application Id</b> (саме те поле, що на скріні нижче).</li>
+          <li>Якщо <b>Game Services</b> або <b>Cloud Services</b> увімкнені, але поле порожнє — зʼявиться помилка <b>Configuration Incomplete</b>.</li>
+        </ul>
+
+        <div class="screens">
+          <div class="screen">
+            <div class="top">
+              <div class="name">Скрін 2.8: Налаштований розділ Game Services</div>
+              <div class="tag">Game</div>
+            </div>
+            <div class="img">
+              <img src="Image/Img2_8.png" alt="Game Services Settings">
+            </div>
+            <div class="caption">Поле має бути заповнене, якщо увімкнені Cloud/Game Services — інакше конфігурація буде “Incomplete”.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 10 -->
+      <div class="card">
+        <h3>Крок 10 — Cloud Services (iOS: Substitute Entitlement Identifiers)</h3>
+        <ul class="list">
+          <li>Розділ <b>Cloud Services</b> відповідає за синхронізацію даних у хмарі.</li>
+          <li>Якщо ви використовуєте <b>iOS</b>, інколи потрібно увімкнути <b>Substitute Entitlement Identifiers</b>.</li>
+          <li>Це потрібно, щоб Essential Kit коректно підставляв/зіставляв entitlement identifiers для iCloud/сервісів Apple у випадках, коли проєкт має інші ідентифікатори або різні середовища (dev/prod).</li>
+          <li>Якщо ви працюєте тільки з Android — цей пункт можна не змінювати.</li>
+        </ul>
+
+        <div class="screens">
+          <div class="screen">
+            <div class="top">
+              <div class="name">Скрін 2.9: Налаштований розділ Cloud Services</div>
+              <div class="tag">Cloud</div>
+            </div>
+            <div class="img">
+              <img src="Image/Img2_9.png" alt="Cloud Services Settings">
+            </div>
+            <div class="caption">Перевірте: Cloud увімкнений і немає “Required” помилок по сервісах.</div>
+          </div>
+        </div>
+
+        <div class="callout">
+          <b>Ознаки “готовності” у вашій системі:</b><br>
+          <ul class="list">
+            <li><b>StoreReady</b> → <code>true</code> (Billing ініціалізувався, ціни доступні).</li>
+            <li><b>CloudReady</b> → <code>true</code> (після першого <code>Synchronize</code> + завантаження даних).</li>
+            <li>Для діагностики переглядайте логи з префіксами <code>[DataManager]</code> і <code>[IAP]</code>.</li>
+          </ul>
+        </div>
+
+        <pre>
+Якщо щось не стартує:
+- Перевірте Essential Kit Settings
+- Перевірте, чи вимкнені непотрібні фічі (які ви не використовуєте)
+- Перевірте, чи заповнені required поля (Public Key / App Id / тощо)
+        </pre>
+      </div>
+
+    </div>
+  </div>
+</details>        <!-- ===== 3) YOUR SYSTEM SETUP ===== -->
+<details class="acc" data-keys="datamanager cloudkey vars autosync stub mode iapStubMode debounce inspectorKeyToClear">
+  <summary class="acc-head">
+    <div class="acc-left">
+      <div class="acc-title">3) Налаштування System IAP (DataManager)</div>
+      <div class="acc-sub">Додавання на сцену + що заповнювати в інспекторі: iapStubMode, cloudKey, vars, autoSync</div>
+    </div>
+    <div class="acc-right">
+      <span class="pill ok">Config</span>
+      <div class="chev">˅</div>
+    </div>
+  </summary>
+
+  <div class="acc-body">
+    <div class="grid">
+
+      <!-- STEP 1 -->
+      <div class="card">
+        <h3>Крок 1 — Додати DataManager на сцену</h3>
+        <ul class="list">
+          <li>Створіть на сцені порожній обʼєкт (GameObject) і назвіть його <b>DataManager</b> (можна назвати як завгодно).</li>
+          <li>Натисніть <b>Add Component</b> та додайте компонент <b>DataManager</b>.</li>
+        </ul>
+
+        <div class="screens">
+          <div class="screen">
+            <div class="top">
+              <div class="name">Скрін 3.1: Додавання DataManager на сцену</div>
+              <div class="tag">Inspector</div>
+            </div>
+            <div class="img">
+              <img src="Image/Img3_1.png" alt="Create DataManager + Add Component">
+              </div>
+            <div class="caption">DataManager бажано зробити єдиним на всю гру (він працює як singleton і зберігається між сценами).</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="card">
+        <h3>Крок 2 — Iap Stub Mode (заглушка покупок)</h3>
+        <ul class="list">
+          <li><b>Iap Stub Mode</b> — режим, який дозволяє тестувати покупки без підключення до Google Play / App Store.</li>
+          <li><b>Off</b> — заглушка вимкнена (всі покупки йдуть через реальний стор).</li>
+          <li><b>Editor Only</b> — заглушка працює тільки в Unity Editor (у білді буде реальний стор).</li>
+          <li><b>Everywhere</b> — заглушка працює і в Editor, і в білді (зручно для внутрішніх демо/тестів, але не для релізу).</li>
+        </ul>
+
+        <div class="callout">
+          <b>Рекомендація:</b> під час розробки використовуйте <b>Editor Only</b>, щоб кнопки покупки працювали без Play Console.
+        </div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="card">
+        <h3>Крок 3 — Cloud Key (ключ збереження в хмарі)</h3>
+        <ul class="list">
+          <li><b>Cloud Key</b> — це назва “комірки” в Cloud Save, в якій DataManager зберігає JSON зі змінними.</li>
+          <li>Можна вказати будь-який текст, але бажано дотримуватись правил:</li>
+          <li>✅ тільки латиниця, цифри, <code>_</code> (без пробілів і спецсимволів);</li>
+          <li>✅ однаковий ключ у всіх білдах, інакше дані “не знайдуться”;</li>
+          <li>✅ якщо ви змінюєте структуру змінних — краще створити нову версію ключа.</li>
+        </ul>
+
+        <div class="callout">
+          <b>Приклад:</b> <code>player_vars_v2</code><br>
+          <small>Порада: суфікс <code>_v2</code> допомагає, коли ви додаєте нові змінні або міняєте дефолти.</small>
+        </div>
+      </div>
+
+      <!-- STEP 4 -->
+      <div class="card">
+        <h3>Крок 4 — Auto Sync</h3>
+        <ul class="list">
+          <li><b>Auto Sync</b> — якщо увімкнено, DataManager буде автоматично запускати синхронізацію з хмарою після змін змінних (наприклад після покупки).</li>
+          <li>Якщо вимкнути — дані зміняться локально, але в хмару підуть тільки після ручного виклику синхронізації (або при наступному тригері, який ви зробите самі).</li>
+        </ul>
+
+        <div class="callout">
+          <b>Рекомендація:</b> залишайте <b>Auto Sync = true</b>, щоб прогрес та покупки швидко потрапляли в Cloud Save.
+        </div>
+      </div>
+
+      <!-- STEP 5 -->
+      <div class="card">
+        <h3>Крок 5 — Sync Debounce Seconds</h3>
+        <ul class="list">
+          <li><b>Sync Debounce Seconds</b> — затримка перед синхронізацією після змін.</li>
+          <li>Потрібно, щоб не викликати синхронізацію занадто часто (наприклад, якщо за 1 секунду змінюється кілька змінних).</li>
+          <li>Чим більше значення — тим рідше буде викликатися Sync, але тим довше дані можуть залишатися тільки локально.</li>
+        </ul>
+
+        <div class="callout">
+          <b>Рекомендовано:</b> <code>0.5</code> – <code>1.0</code> сек (часто ставлять <code>0.8</code> за замовчуванням).
+        </div>
+      </div>
+
+      <!-- STEP 6 -->
+      <div class="card">
+        <h3>Крок 6 — Vars (змінні гри)</h3>
+        <ul class="list">
+          <li><b>Vars</b> — це список змінних, які DataManager зберігає та синхронізує через Cloud Save.</li>
+          <li>Кожна змінна має:</li>
+          <li><b>Id</b> — унікальний ключ (наприклад: <code>gems</code>, <code>coins</code>, <code>vip</code>).</li>
+          <li><b>Type</b> — тип (Int / Bool / Float / String).</li>
+          <li><b>Defaults</b> — значення за замовчуванням (що буде на “чистому” акаунті або після ресету).</li>
+          <li><b>Current</b> — поточне значення, яке змінюється під час гри.</li>
+        </ul>
+
+        <div class="callout">
+          <b>Важливо:</b> ID повинні бути унікальні. Якщо зробити два однакових — одна змінна “перекриє” іншу.
+        </div>
+
+<pre>
+Приклади змінних:
+- coins (Int) default=0
+- gems  (Int) default=0
+- vip   (Bool) default=false
+- player_name (String) default="Player"
+</pre>
+      </div>
+
+      <!-- STEP 7 -->
+      <div class="card">
+        <h3>Крок 7 — Inspector Key To Clear (очистка збереження)</h3>
+        <ul class="list">
+          <li><b>Inspector Key To Clear</b> — ключ, який ви можете вручну ввести в інспекторі, щоб очистити дані в Cloud Save через кнопку.</li>
+          <li>Зазвичай сюди вписують той самий ключ, що і в <b>Cloud Key</b> (наприклад <code>player_vars_v2</code>).</li>
+          <li>Це зручно для тестування: ви очищаєте хмарні дані і перевіряєте “перший запуск” або “чистий профіль”.</li>
+        </ul>
+
+        <div class="callout">
+          <b>Порада:</b> перед очисткою переконайтеся, що ви точно вказали правильний ключ. Інакше ви очистите не те збереження (або нічого не очиститься).
+        </div>
+      </div>
+
+      <!-- EXTRA CARD: product effects -->
+      <div class="card">
+        <h3>Як у вашій системі описується “що дає покупка”</h3>
+        <ul class="list">
+          <li>Ефект покупки задається не в DataManager, а в UI кнопки через <b>VarChange[]</b>.</li>
+          <li><b>Op.Add</b> — додає значення (coins/gems/інкремент).</li>
+          <li><b>Op.Set</b> — встановлює значення (vip=true, unlock=true).</li>
+        </ul>
+
+<pre>
+Приклади:
+- Add 100 gems:
+  varId="gems", type=Int, op=Add, intValue=100
+
+- Set VIP:
+  varId="vip", type=Bool, op=Set, boolValue=true
+</pre>
+      </div>
+
+    </div>
+
+    <div class="screens">
+      <div class="screen">
+        <div class="top">
+          <div class="name">Скрін 3.2: DataManager Inspector (поля)</div>
+          <div class="tag">Inspector</div>
+        </div>
+        <div class="img">
+          <img src="Image/Img3_2.png" alt="DataManager Inspector">
+        </div>
+        <div class="caption">
+          Підпишіть: режим заглушки, ключ збереження, список змінних, та параметри авто-синхронізації.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</details>
+
+        <!-- ===== 4) INTEGRATION STEP-BY-STEP ===== -->
+        <details class="acc" data-keys="iapbuybuttonview shop integration structure hierarchy productid changes stub store ready cloud ready">
+  <summary class="acc-head">
+    <div class="acc-left">
+      <div class="acc-title">4) Інтеграція магазину через IapBuyButtonView</div>
+      <div class="acc-sub">Принцип роботи кнопки покупки + структура UI + звʼязок з DataManager</div>
+    </div>
+    <div class="acc-right">
+      <span class="pill warn">How-to</span>
+      <div class="chev">˅</div>
+    </div>
+  </summary>
+
+  <div class="acc-body">
+    <div class="grid">
+
+      <!-- CARD 1 -->
+      <div class="card">
+        <h3>Принцип роботи IapBuyButtonView</h3>
+
+        <ul class="list">
+          <li><b>IapBuyButtonView</b> — це UI-компонент, який відповідає за один конкретний продукт.</li>
+          <li>Він не зберігає дані — він лише запускає покупку і передає результат у <b>DataManager</b>.</li>
+          <li>DataManager — єдине джерело правди для змінних (coins, gems, vip тощо).</li>
+        </ul>
+
+        <div class="callout">
+          <b>Логіка проста:</b><br>
+          productId → Store або STUB → підтвердження покупки → застосування VarChange[] → збереження в Cloud.
+        </div>
+      </div>
+
+      <!-- CARD 2 -->
+      <div class="card">
+  <h3>Що і як налаштовувати в IapBuyButtonView (що до чого відноситься)</h3>
+
+  <div class="callout">
+    <b>Ідея:</b> цей компонент описує <b>один товар</b> у магазині та “підвʼязує” його до кнопки.
+    Він бере <code>productId</code> + <code>productType</code> + <code>changes</code> і реєструє це в <b>DataManager</b>, а потім по кліку викликає покупку.
+  </div>
+
+  <h4 style="margin-top:12px;">1) Product (що саме купується)</h4>
+  <ul class="list">
+    <li>
+      <b>Product Id</b> (<code>productId</code>) — це головний ідентифікатор товару.
+      <br>Він має <b>1:1 співпадати</b> з ID, який ви створили в Play Console / App Store.
+      <br><span>Приклад: якщо в Play Console товар названий <code>gem_pack_1</code>, то тут має бути рівно <code>gem_pack_1</code> (регістр важливий).</span>
+    </li>
+    <li>
+      <b>Product Type</b> (<code>productType</code>) — тип товару:
+      <ul class="list">
+        <li><b>Consumable</b> — витратний (можна купувати багато разів: гем-паки, монети).</li>
+        <li><b>NonConsumable</b> — одноразовий (купив і назавжди: VIP, remove_ads).</li>
+        <li><b>Subscription</b> — підписка (активний, поки діє підписка).</li>
+      </ul>
+    </li>
+  </ul>
+
+  <div class="callout">
+    <b>Важливо:</b> <code>productType</code> також впливає на <b>Owned Badge</b>.
+    Для <b>Consumable</b> бейдж “Owned” <u>не показується</u>, бо витратні товари не мають сенсу як “назавжди куплено”.
+  </div>
+
+  <h4 style="margin-top:12px;">2) What this product does (що саме “дає” покупка)</h4>
+  <ul class="list">
+    <li>
+      <b>Changes</b> (<code>DataManager.VarChange[] changes</code>) — список змін, які будуть застосовані <b>після успішної покупки</b>.
+      <br>Це ваша “нагорода”: додати гемів/монет або увімкнути VIP/Remove Ads.
+    </li>
+    <li>
+      Кожен елемент <b>VarChange</b> повинен посилатись на змінну з DataManager → <b>Vars</b> через поле <code>varId</code>.
+      <br><b>varId</b> має співпасти з <b>DataVar.id</b> у DataManager.
+    </li>
+    <li>
+      <b>Op</b>:
+      <ul class="list">
+        <li><b>Add</b> — додає (наприклад, <code>+100 gems</code>).</li>
+        <li><b>Set</b> — встановлює значення (наприклад, <code>vip=true</code>).</li>
+      </ul>
+    </li>
+  </ul>
+
+  <div class="callout">
+    <b>Порада по “Owned”:</b> бейдж “Owned” у цьому скрипті визначається так:
+    продукт вважається купленим, якщо <b>всі зміни з Op.Set</b> вже виконані в даних (тобто значення у DataManager вже рівні тим, що в Changes).
+    <br>Тому для NonConsumable/Sub рекомендовано додавати хоча б одну змінну типу <b>Bool Set</b> (наприклад <code>vip=true</code> або <code>remove_ads=true</code>).
+  </div>
+
+<pre>
+Приклади Changes:
+
+1) Пак гемів (+100):
+- varId="gems", type=Int, op=Add, intValue=100
+
+2) VIP (назавжди):
+- varId="vip", type=Bool, op=Set, boolValue=true
+</pre>
+
+  <h4 style="margin-top:12px;">3) UI (куди привʼязати кнопку та бейдж)</h4>
+  <ul class="list">
+    <li>
+      <b>Buy Button</b> (<code>buyButton</code>) — сюди перетягніть компонент <b>Button</b>,
+      який має викликати покупку.
+      <br>Сам компонент IapBuyButtonView рекомендовано вішати на <b>головний обʼєкт ShopItem</b>,
+      а <b>Button</b> призначати з дочірнього елемента (або з цього ж обʼєкта — як вам зручно).
+    </li>
+    <li>
+      <b>Owned Badge</b> (<code>ownedBadge</code>) — опційний GameObject (іконка/плашка “Owned”).
+      <br>Його можна зробити дочірнім обʼєктом і вимикати за замовчуванням — скрипт сам буде вмикати/вимикати.
+    </li>
+  </ul>
+
+  <div class="callout">
+    <b>Структура може бути будь-якою</b>, але рекомендовано, щоб один ShopItem містив:
+    кнопку, тексти, бейдж, і на корені — IapBuyButtonView.
+    Нижче — рекомендований приклад (під це буде скрін).
+  </div>
+
+<pre>
+Рекомендована структура (приклад):
+
+ShopItem_GemPack (GameObject)   ← тут IapBuyButtonView
+│
+├── Button (UI Button)          ← це перетягуєте в поле Buy Button
+├── OwnedBadge (GameObject)     ← це перетягуєте в поле Owned Badge (optional)
+└── (інші UI елементи: тексти/іконки/фон — як вам потрібно)
+</pre>
+
+  <h4 style="margin-top:12px;">4) Як це працює під капотом (коротко)</h4>
+  <ul class="list">
+    <li>При увімкненні обʼєкта скрипт чекає, поки зʼявиться <b>DataManager.I</b>.</li>
+    <li>Після цього він <b>реєструє продукт</b> в DataManager (productId + productType + changes).</li>
+    <li>Підписується на події DataManager і оновлює UI (Owned Badge).</li>
+    <li>По кліку на кнопку викликає <code>DataManager.I.Buy(productId)</code>.</li>
+  </ul>
+
+  <div class="callout">
+    <b>Важливо:</b> цей скрипт не показує ціну і не виводить статуси — він лише запускає покупку і керує “Owned Badge”.
+    Якщо потрібно показувати ціну/статуси — це робиться окремими UI-скриптами або розширеною версією.
+  </div>
+</div>
+
+      <!-- CARD 3 -->
+      <div class="card">
+        <h3>Як задається нагорода (VarChange[])</h3>
+
+        <ul class="list">
+          <li>Нагорода задається через масив <b>VarChange[]</b>.</li>
+          <li><b>varId</b> має співпадати з ID змінної у <b>DataManager → Vars</b>.</li>
+          <li><b>Op.Add</b> — додає значення.</li>
+          <li><b>Op.Set</b> — встановлює значення.</li>
+        </ul>
+
+<pre>
+Приклад:
+
+Пак гемів:
+varId="gems"
+type=Int
+op=Add
+intValue=100
+
+VIP:
+varId="vip"
+type=Bool
+op=Set
+boolValue=true
+</pre>
+
+        <div class="callout">
+          Якщо змінної з таким ID немає в DataManager — нагорода не застосовується.
+        </div>
+      </div>
+
+      <!-- CARD 4 -->
+      <div class="card">
+        <h3>STUB режим та реальний Store</h3>
+
+        <ul class="list">
+          <li>Якщо <b>iapStubMode</b> увімкнений — покупка симулюється (без Google Play).</li>
+          <li>Якщо вимкнений — викликається реальна покупка через Essential Kit.</li>
+          <li>Після успішної покупки DataManager застосовує VarChange[] і виконує синхронізацію (якщо AutoSync=true).</li>
+        </ul>
+
+        <div class="callout">
+          Для розробки рекомендується <b>EditorOnly</b>, щоб кнопки працювали в Unity Editor.
+        </div>
+      </div>
+
+      <!-- CARD 5 -->
+      <div class="card">
+        <h3>Рекомендована структура в Hierarchy</h3>
+
+        <ul class="list">
+          <li><b>IapBuyButtonView</b> потрібно вішати на головний обʼєкт елемента магазину.</li>
+          <li>Компонент <b>Button</b> може бути дочірнім обʼєктом.</li>
+          <li>У полі <b>Buy Button</b> потрібно призначити цей дочірній Button вручну.</li>
+        </ul>
+
+        <div class="callout">
+          <b>Структура може бути будь-якою</b>, але рекомендовано розділяти:
+          логіку (IapBuyButtonView) — на головному обʼєкті,
+          UI-елементи — як дочірні.
+        </div>
+
+<pre>
+Рекомендована структура:
+
+ShopItem_GemPack (GameObject)
+│
+├── Button (UI Button)
+├── PriceText (TMP_Text)
+├── TitleText (TMP_Text)
+├── StatusText (TMP_Text)
+└── OwnedBadge (GameObject)
+
+На ShopItem_GemPack:
+- IapBuyButtonView
+
+У полі Buy Button:
+- перетягнути дочірній Button
+</pre>
+
+        <div class="callout">
+          Якщо повісити скрипт прямо на Button — це теж буде працювати,
+          але структура стане менш гнучкою для масштабування.
+        </div>
+      </div>
+
+      <!-- CARD 6 -->
+      <div class="card">
+        <h3>Коли кнопка стає активною</h3>
+
+        <ul class="list">
+          <li><b>StoreReady = true</b> — можна показувати ціну.</li>
+          <li><b>CloudReady = true</b> — змінні повністю синхронізовані.</li>
+          <li>Поки ці значення false — можна показувати “Loading…” або тимчасово блокувати кнопку.</li>
+        </ul>
+
+<pre>
+Мінімальна перевірка:
+- StoreReady → ціна підтягнулась
+- CloudReady → дані гравця завантажені
+</pre>
+      </div>
+
+    </div>
+
+    <div class="screens">
+      <div class="screen">
+        <div class="top">
+          <div class="name">Скрін 4.1: Приклад структури Shop Item</div>
+          <div class="tag">Hierarchy</div>
+        </div>
+        <div class="img">
+          <img src="Image/Img4_1.png" alt="ShopItem Structure">
+        </div>
+        <div class="caption">
+          Підпишіть: IapBuyButtonView на кореневому обʼєкті, Button — дочірній.
+        </div>
+      </div>
+    </div>
+
+    <div class="screens">
+  <div class="screen">
+    <div class="top">
+      <div class="name">Скрін 4.2: Приклад налаштування IapBuyButtonView.cs</div>
+      <div class="tag">Inspector</div>
+    </div>
+    <div class="img">
+      <img src="Image/Img4_2.png" alt="IapBuyButtonView Inspector">
+      <div>
+      </div>
+    </div>
+    <div class="caption">
+      Підпишіть: де вказаний productId, який тип продукту вибрано, як заповнений VarChange[],
+      та куди призначений Buy Button.
+    </div>
+  </div>
+
+</div>
+
+  </div>
+</details>
+
+
+<!-- ===== 5) DataManager Interaction ===== -->
+<details class="acc" data-keys="datamanager interaction iap system scripts api events onstatechanged oncloudready onstoreready buy apply register getprice sync clear">
+  <summary class="acc-head">
+    <div class="acc-left">
+      <div class="acc-title">5) Взаємодія з DataManager (IAP System) у скриптах</div>
+      <div class="acc-sub">Які методи/події доступні, як до них підключатися, що за що відповідає</div>
+    </div>
+    <div class="acc-right">
+      <span class="pill ok">API</span>
+      <div class="chev">˅</div>
+    </div>
+  </summary>
+
+  <div class="acc-body">
+    <div class="grid">
+
+      <!-- CARD 1 -->
+      <div class="card">
+        <h3>Коли це потрібно</h3>
+        <ul class="list">
+          <li>Коли ви пишете будь-який UI/геймплей скрипт, який має читати або змінювати дані (coins/gems/vip/і тд.).</li>
+          <li>Коли потрібно запускати покупку (IAP) або показувати ціну/статус готовності.</li>
+          <li>Коли потрібно реагувати на події: завантаження Cloud, готовність Store, будь-які зміни стану.</li>
+        </ul>
+
+        <div class="callout">
+          <b>Правило:</b> дані беруться тільки з <code>DataManager.I</code>. UI не тримає “свої” coins/gems — він лише відображає.
+        </div>
+      </div>
+
+      <!-- CARD 2 -->
+      <div class="card">
+        <h3>Таблиця: методи та події DataManager, до яких можна підключатися</h3>
+
+        <div style="overflow:auto;">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Назва</th>
+                <th>Тип</th>
+                <th>Що робить</th>
+                <th>Як/де використовувати</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- EVENTS / FLAGS -->
+              <tr>
+                <td><code>StoreReady</code></td>
+                <td>Прапорець</td>
+                <td>True, коли магазин ініціалізовано (або STUB активний).</td>
+                <td>Увімкнути Buy-кнопки, почати показувати ціну.</td>
+              </tr>
+              <tr>
+                <td><code>CloudReady</code></td>
+                <td>Прапорець</td>
+                <td>True, коли завершилась перша синхронізація Cloud і дані підвантажились.</td>
+                <td>Показувати правильні coins/gems/owned (до цього можуть бути дефолти).</td>
+              </tr>
+              <tr>
+                <td><code>OnStoreReady</code></td>
+                <td>Подія</td>
+                <td>Викликається, коли Store стає готовим.</td>
+                <td>Оновити UI ціни, активувати Buy, прибрати “Loading…”.</td>
+              </tr>
+              <tr>
+                <td><code>OnCloudReady</code></td>
+                <td>Подія</td>
+                <td>Викликається, коли CloudReady стає true.</td>
+                <td>Оновити UI валюти/інвентар/owned, бо дані прийшли з хмари.</td>
+              </tr>
+              <tr>
+                <td><code>OnStateChanged</code></td>
+                <td>Подія</td>
+                <td>Викликається при будь-якій зміні даних (Set/Add/ApplyProduct/LoadFromCloud).</td>
+                <td>Головна подія для UI: CurrencyTextView, ownedBadge, перерахунок UI.</td>
+              </tr>
+
+              <!-- IAP FLOW -->
+              <tr>
+                <td><code>RegisterProduct(ProductDef def)</code></td>
+                <td>Метод</td>
+                <td>Реєструє продукт у DataManager (productId + productType + changes).</td>
+                <td>Викликається з UI (наприклад IapBuyButtonView), щоб DataManager знав “що дає” продукт.</td>
+              </tr>
+              <tr>
+                <td><code>TryGetProduct(productId, out def)</code></td>
+                <td>Метод</td>
+                <td>Перевіряє, чи продукт зареєстрований у DataManager.</td>
+                <td>Діагностика/перевірка перед застосуванням або для кастомних UI-потоків.</td>
+              </tr>
+              <tr>
+                <td><code>Buy(string productId)</code></td>
+                <td>Метод</td>
+                <td>Запускає покупку. У STUB — симулює й одразу застосовує продукт. У Store — викликає Essential Kit.</td>
+                <td>Клік по кнопці “Купити” (магазин/пакет/підписка).</td>
+              </tr>
+              <tr>
+                <td><code>ApplyProduct(string productId)</code></td>
+                <td>Метод</td>
+                <td>Застосовує VarChange[] зареєстрованого продукту до змінних.</td>
+                <td>Зазвичай викликається автоматично після покупки. Можна викликати вручну для тесту.</td>
+              </tr>
+              <tr>
+                <td><code>GetPrice(string productId)</code></td>
+                <td>Метод</td>
+                <td>Повертає локалізовану ціну. У STUB повертає <code>TEST</code>, якщо немає ціни.</td>
+                <td>Показ ціни на UI (окремим скриптом). Використовувати після <code>StoreReady=true</code>.</td>
+              </tr>
+
+              <!-- VARS: READ/WRITE -->
+              <tr>
+                <td><code>GetInt / GetBool / GetFloat / GetString</code></td>
+                <td>Методи</td>
+                <td>Читають значення змінної по її ID.</td>
+                <td>UI, логіка прогресу, перевірка owned, доступів, валюти.</td>
+              </tr>
+              <tr>
+                <td><code>AddInt / AddFloat</code></td>
+                <td>Методи</td>
+                <td>Додають значення до змінної і викликають commit + (опційно) sync.</td>
+                <td>Нагороди, бонуси, “видали 50 coins”.</td>
+              </tr>
+              <tr>
+                <td><code>SetInt / SetBool / SetFloat / SetString</code></td>
+                <td>Методи</td>
+                <td>Встановлюють значення змінної і викликають commit + (опційно) sync.</td>
+                <td>Флаги типу vip/remove_ads/unlock, а також примусове встановлення значень.</td>
+              </tr>
+              <tr>
+                <td><code>GetVar(string name)</code></td>
+                <td>Метод</td>
+                <td>Універсальне отримання значення як <code>object</code> (для діагностики, коли тип не відомий).</td>
+                <td>Дебаг/інструменти/універсальні UI.</td>
+              </tr>
+
+              <!-- CLOUD TOOLS -->
+              <tr>
+                <td><code>ForceSyncAsync()</code></td>
+                <td>Метод</td>
+                <td>Примусова синхронізація Cloud, повертає <code>true/false</code>.</td>
+                <td>Кнопка “Sync”, критичні моменти (перед виходом/після великої нагороди).</td>
+              </tr>
+              <tr>
+                <td><code>ClearCloudKey(key, resetLocalToDefaults, queueSync)</code></td>
+                <td>Метод</td>
+                <td>Очищає збереження по ключу в Cloud та опційно скидає локальні значення.</td>
+                <td>Debug/Reset прогресу (обережно, бажано тільки для dev).</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout">
+          <b>Найчастіше для UI:</b> <code>OnStateChanged</code>, <code>OnStoreReady</code>, <code>OnCloudReady</code>, <code>GetPrice()</code>, <code>Buy()</code>.
+        </div>
+      </div>
+
+      <!-- CARD 3 -->
+      <div class="card">
+        <h3>Рекомендований патерн у скриптах</h3>
+
+<pre>
+1) Перевірити, що DataManager існує:
+   if (DataManager.I == null) return;
+
+2) Для UI підписатися на події:
+   OnStateChanged → оновити текст/бейджі
+   OnStoreReady   → показати ціну/увімкнути Buy
+   OnCloudReady   → показати правильні дані (після Cloud)
+
+3) Не читати дані “занадто рано”:
+   поки CloudReady=false значення можуть бути дефолтні
+</pre>
+
+        <div class="callout">
+          <b>UX:</b> поки <code>CloudReady=false</code> — показуйте “Loading…” або приховуйте магазин/валюту.
+        </div>
+      </div>
+
+    </div>
+
+    </div>
+
+  </div>
+</details>
+        <!-- ===== 6) Troubleshooting ===== -->
+<details class="acc" data-keys="errors fixes troubleshooting store not ready product not found config incomplete cloudready mismatch newtonsoft cs0246">
+  <summary class="acc-head">
+    <div class="acc-left">
+      <div class="acc-title">6) Помилки та що робити (Troubleshooting)</div>
+      <div class="acc-sub">Типові симптоми, причина, рішення.</div>
+    </div>
+    <div class="acc-right">
+      <span class="pill bad">Fix</span>
+      <div class="chev">˅</div>
+    </div>
+  </summary>
+
+  <div class="acc-body">
+    <div class="card">
+      <h3>Таблиця помилок</h3>
+
+      <table class="table" aria-label="Troubleshooting table">
+        <thead>
+          <tr>
+            <th style="width: 34%;">Повідомлення / Симптом</th>
+            <th style="width: 33%;">Причина</th>
+            <th style="width: 33%;">Як вирішити</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <tr>
+            <td>
+              <span class="pill bad">CS0246: Newtonsoft not found</span><br>
+              <code>Assets\Plugins\VoxelBusters\CoreLibrary\Editor\CoreLibrary\Utilities\AssemblyDefinitionData.cs(1,7): error CS0246: The type or namespace name 'Newtonsoft' could not be found</code>
+            </td>
+            <td>
+              У проєкті немає пакету <b>Newtonsoft Json</b> (його потребує VoxelBusters CoreLibrary/Essential Kit).
+            </td>
+            <td>
+              <ol class="list">
+                <li>Відкрийте <code>Window &gt; Package Manager</code>.</li>
+                <li>Натисніть <b>+</b> (зверху зліва). <i>(тут буде скрін)</i></li>
+                <li>Оберіть <b>Add package by name…</b> / <b>Install package by Name</b>.</li>
+                <li>Впишіть: <code>com.unity.nuget.newtonsoft-json</code></li>
+                <li>Натисніть <b>Install</b>. <i>(тут буде скрін)</i></li>
+              </ol>
+              Після встановлення, якщо все зроблено правильно — помилки зникнуть.
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <span class="pill bad">Configuration Incomplete</span><br>
+              Не збирається білд / помилка в Console під час Build або запуску
+            </td>
+            <td>
+              У Essential Kit увімкнена фіча, але не заповнені <b>Required</b> поля (Billing/Cloud/Game Services/DeepLink/Push).
+            </td>
+            <td>
+              <ul class="list">
+                <li>Відкрийте <b>EssentialKit Settings</b> і знайдіть блок із <b>Required</b>.</li>
+                <li>Заповніть потрібні поля (Public Key / PlayServicesApplicationId / google-services.json тощо) <b>або</b> вимкніть непотрібні фічі (Deep Link/Push).</li>
+                <li>Після змін перезапустіть Unity (інколи потрібно для перезбірки asmdef).</li>
+              </ul>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <span class="pill warn">Store not ready</span><br>
+              Натискаєте Buy, але покупка не стартує / в логах “Store not ready yet”
+            </td>
+            <td>
+              Billing ще не ініціалізувався або ініціалізація впала через конфіг/доступ до стора.
+            </td>
+            <td>
+              <ul class="list">
+                <li>Переконайтесь, що <code>StoreReady=true</code> перед натисканням Buy (краще блокувати кнопку до готовності).</li>
+                <li>Перевірте Billing налаштування Essential Kit (ключі/ID).</li>
+                <li>Для тесту в Editor ввімкніть <code>iapStubMode=EditorOnly</code> (тоді Play Market не відкривається — це нормально).</li>
+              </ul>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <span class="pill bad">Product not found</span><br>
+              В логах: <code>[IAP] Product not found in store: ...</code>
+            </td>
+            <td>
+              <code>productId</code> не співпадає з Play Console / продукт не активний / білд не підписаний / тестер не доданий.
+            </td>
+            <td>
+              <ul class="list">
+                <li>Перевірте, що <code>productId</code> у Unity <b>1:1</b> як у Play Console (без пробілів, регістр важливий).</li>
+                <li>Перевірте статус продукту: має бути <b>Active</b> (і додано ціну/країни).</li>
+                <li>Перевірте тестування: додайте тест-акаунт у License Testing / Internal testing, встановлюйте додаток із Play (а не через “Install APK”).</li>
+              </ul>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <span class="pill warn">ApplyProduct: ProductDef not found</span><br>
+              В логах: <code>ApplyProduct: ProductDef not found 'xxx'. (Register it in UI)</code>
+            </td>
+            <td>
+              Продукт не зареєстрований через <code>RegisterProduct</code> (UI-кнопка не викликала реєстрацію або не заповнені поля).
+            </td>
+            <td>
+              <ul class="list">
+                <li>Переконайтесь, що на картці/кнопці продукту є <b>IapBuyButtonView</b>.</li>
+                <li>У ньому заповніть <code>productId</code>, <code>productType</code> і <code>changes</code>.</li>
+                <li>Кнопка Buy має бути призначена в поле <code>buyButton</code>.</li>
+              </ul>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <span class="pill warn">CloudReady=false → значення “дефолтні”</span><br>
+              Coins/Gems показує 0 або не оновлюється одразу після старту
+            </td>
+            <td>
+              UI читає значення раніше, ніж завершилась синхронізація Cloud (дані ще не прийшли).
+            </td>
+            <td>
+              <ul class="list">
+                <li>Дочекайтесь <code>OnCloudReady</code> або перевіряйте <code>CloudReady</code>.</li>
+                <li>Поки <code>CloudReady=false</code> — показуйте “Loading…” або приховуйте валюти/магазин.</li>
+                <li>Для текстів використовуйте <b>CurrencyTextView</b>, він оновлюється по <code>OnStateChanged</code>.</li>
+              </ul>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <span class="pill warn">Var not found</span> / <span class="pill warn">type mismatch</span><br>
+              В логах: <code>TryGetVar: not found</code> або <code>type mismatch</code>
+            </td>
+            <td>
+              В <code>vars</code> немає змінної з таким <code>id</code> або тип getter’а не відповідає типу змінної.
+            </td>
+            <td>
+              <ul class="list">
+                <li>Додайте змінну в список <code>vars</code> у DataManager (id + type + default).</li>
+                <li>Перевірте, що id однаковий у всіх місцях: <code>vars</code>, <code>CurrencyTextView.varId</code>, <code>VarChange.varId</code>.</li>
+                <li>Використовуйте правильний getter: <code>GetInt</code> для Int, <code>GetBool</code> для Bool тощо.</li>
+              </ul>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <span class="pill warn">Price = “…”</span> або не підтягується ціна
+            </td>
+            <td>
+              Ціни ще не прийшли зі Store (Store не готовий) або продукт не повернувся в списку продуктів.
+            </td>
+            <td>
+              <ul class="list">
+                <li>Показуйте ціну тільки після <code>StoreReady=true</code> (або після <code>OnStoreReady</code>).</li>
+                <li>Перевірте, що продукт існує та активний у Play Console/App Store.</li>
+                <li>У STUB-режимі “TEST” — очікувана поведінка (для Editor тестів).</li>
+              </ul>
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+
+      <div class="callout">
+        <b>Швидке правило:</b> якщо помилка про <b>not ready</b> — це порядок ініціалізації/готовність сервісів.
+        Якщо <b>not found</b> — це <code>id</code> (productId/varId) або налаштування в консолі.
+      </div>
+    </div>
+
+    </div>
+  </div>
+</details>
+
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="copyright">
+      <p>&copy; 2023 - 2026 Flying Yastrub Studio. Всі права захищені.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Mobile menu toggle
+  document.getElementById('mobileMenu').addEventListener('click', function() {
+    document.getElementById('mainNav').classList.toggle('active');
+  });
+
+  // Smooth scrolling for internal anchors
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      const href = this.getAttribute('href');
+      if (!href || href.length < 2) return;
+
+      e.preventDefault();
+      document.querySelector(href).scrollIntoView({ behavior: 'smooth' });
+
+      const nav = document.getElementById('mainNav');
+      if (nav.classList.contains('active')) nav.classList.remove('active');
+    });
+  });
+
+  // Header shadow
+  window.addEventListener('scroll', function() {
+    const header = document.querySelector('header');
+    header.style.boxShadow = (window.scrollY > 80)
+      ? '0 2px 20px rgba(255, 0, 0, 0.3)'
+      : '0 2px 10px rgba(0, 0, 0, 0.5)';
+  });
+
+  // ===== Accordion controls + search =====
+  const accordion = document.getElementById('accordion');
+  const allDetails = () => Array.from(accordion.querySelectorAll('details.acc'));
+
+  document.getElementById('btnExpandAll').addEventListener('click', () => {
+    allDetails().forEach(d => d.open = true);
+  });
+
+  document.getElementById('btnCollapseAll').addEventListener('click', () => {
+    allDetails().forEach(d => d.open = false);
+  });
+
+  const searchInput = document.getElementById('searchInput');
+
+  function normalize(s) {
+    return (s || "")
+      .toString()
+      .toLowerCase()
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function detailsText(d) {
+    const keys = d.getAttribute('data-keys') || "";
+    const title = d.querySelector('.acc-title')?.textContent || "";
+    const sub = d.querySelector('.acc-sub')?.textContent || "";
+    const body = d.querySelector('.acc-body')?.textContent || "";
+    return normalize(keys + " " + title + " " + sub + " " + body);
+  }
+
+  function applySearch(qRaw) {
+    const q = normalize(qRaw);
+    const list = allDetails();
+
+    if (!q) {
+      list.forEach(d => d.classList.remove('hidden'));
+      return;
+    }
+
+    list.forEach(d => {
+      const hay = detailsText(d);
+      const ok = hay.includes(q);
+      d.classList.toggle('hidden', !ok);
+      // авто-розкриття збігів (можеш прибрати, якщо не хочеш)
+      if (ok) d.open = true;
+    });
+  }
+
+  searchInput.addEventListener('input', e => applySearch(e.target.value));
+</script>
+</body>
+</html>
